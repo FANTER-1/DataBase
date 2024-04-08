@@ -1,16 +1,12 @@
 import sqlite3
 
-# Подключение к базе данных
 conn = sqlite3.connect('your_database.db')
 
-# Создание курсора
 c = conn.cursor()
 
-# Выполнение запроса
 c.execute("""
 ALTER TABLE mountain_passes
 ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'new'
 """)
 
-# Закрытие соединения
 conn.close()
