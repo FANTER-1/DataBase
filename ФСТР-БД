@@ -1,0 +1,68 @@
+Database: перевал
+
+CREATE SEQUENCE pereval_id_seq;
+
+CREATE TABLE "public"."pereval_added" (
+    "id" int4 NOT NULL,
+    "date_added" timestamp,
+    "raw_data" json,
+    "images" json,
+    PRIMARY KEY ("id")
+);
+
+CREATE SEQUENCE pereval_areas_id_seq;
+
+CREATE TABLE "public"."pereval_areas" (
+    "id" int8 NOT NULL,
+    "id_parent" int8 NOT NULL,
+    "title" text,
+    PRIMARY KEY ("id")
+);
+
+CREATE SEQUENCE pereval_added_id_seq;
+
+CREATE TABLE "public"."pereval_images" (
+    "id" int4 NOT NULL,
+    "date_added" timestamp,
+    "img" bytea NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE SEQUENCE untitled_table_200_id_seq;
+
+CREATE TABLE "public"."spr_activities_types" (
+    "id" int4 NOT NULL,
+    "title" text,
+    PRIMARY KEY ("id")
+);
+
+INSERT INTO "public"."pereval_added" ("id", "date_added", "raw_data", "images") VALUES
+(1, '2022-02-21 14:14:00.720184', '{
+    "beautyTitle": "пер. ",
+    "title": "Пхия",
+    "other_titles": "Триев",
+    "connect": "",
+    "add_time": "2021-09-22 13:18:13",
+    "user": {
+        "email": "user@email.tld",
+        "phone": "79031234567",
+        "fam": "Пупкин",
+        "name": "Василий",
+        "otc": "Иванович"
+    },
+    "coords": {
+        "latitude": "45.3842",
+        "longitude": "7.1525",
+        "height": "1200"
+    },
+    "level": {
+        "winter": "",
+        "summer": "1А",
+        "autumn": "1А",
+        "spring": ""
+    }
+}', '{"images": 
+        [{"id": 1, "title":"Седловина"}, 
+         {"id": 2, "title":"Подъем"}]
+    }'
+);
