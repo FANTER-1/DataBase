@@ -11,9 +11,9 @@ class Database:
         )
         self.cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    def submit_data(self, coordinates, height, name, photos, user_name, email, phone):
+    def submit_data(self, coordinates, height, name, photos, user_name, email, phone, status='new'):
         self.cur.execute("""
-        INSERT INTO mountain_passes (coordinates, height, name, photos, user_name, email, phone)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (coordinates, height, name, photos, user_name, email, phone))
+        INSERT INTO mountain_passes (coordinates, height, name, photos, user_name, email, phone, status)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (coordinates, height, name, photos, user_name, email, phone, status))
         self.conn.commit()
