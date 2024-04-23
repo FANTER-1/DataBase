@@ -3,11 +3,11 @@ from rest_framework.response import Response
 from .models import SubmitData
 from .serializers import SubmitDataSerializer
 
-class SubmitDataDetail(generics.RetrieveAPIView):
+class SubmitDataListCreateAPIView(generics.ListCreateAPIView):
     queryset = SubmitData.objects.all()
     serializer_class = SubmitDataSerializer
 
-class SubmitDataUpdate(generics.UpdateAPIView):
+class SubmitDataRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubmitData.objects.all()
     serializer_class = SubmitDataSerializer
 
