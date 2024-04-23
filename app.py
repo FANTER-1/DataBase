@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-from config import DATABASE
 from database import Database
+from config import DATABASE
 
 app = Flask(__name__)
 db = Database(**DATABASE)
