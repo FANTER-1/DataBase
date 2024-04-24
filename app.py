@@ -1,24 +1,12 @@
-from flask import Flask, request, jsonify
-from database import Database
-from config import DATABASE
+from flask import Flask
+from .views import submit_data
+from .database import close_db
 
 app = Flask(__name__)
-db = Database(**DATABASE)
 
-@app.route('/submitData', methods=['POST'])
-def submit_data():
-    data = request.get_json()
-    coordinates = data.get('coordinates')
-    height = data.get('height')
-    name = data.get('name')
-    photos = data.get('photos')
-    user_name = data.get('user_name')
-    email = data.get('email')
-    phone = data.get('phone')
+app.add_url_rule('/submitData', 'submit_data', submit_data, methods=['POST'])
 
-    db.submit_data(coordinates, height, name, photos, user_name, email, phone)
-
-    return jsonify({'success': True}), 200
+app.teardown_appcontext(close_db)
 
 if __name__ == '__main__':
     app.run(debug=True)
