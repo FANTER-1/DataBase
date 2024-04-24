@@ -1,31 +1,29 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from .models import SubmitData
+from flask import request, jsonify, g
+from .database import get_db, close_db
 from .serializers import SubmitDataSerializer
 
-class SubmitDataListCreateAPIView(generics.ListCreateAPIView):
-    queryset = SubmitData.objects.all()
-    serializer_class = SubmitDataSerializer
+def submit_data():
+    try:
+        data = request.get_json()
+        coordinates = data.get('coordinates')
+        height = data.get('height')
+        name = data.get('name')
+        photos = data.get('photos')
+        user_name = data.get('user_name')
+        email = data.get('email')
+        phone = data.get('phone')
 
-class SubmitDataRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SubmitData.objects.all()
-    serializer_class = SubmitDataSerializer
+        if not all([coordinates, height, name, user_name, email, phone]):
+            return jsonify({'success': False, 'error': 'Missing required fields'}), 400
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.status == 'new':
-            serializer = self.get_serializer(instance, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-            return Response({'state': 1, 'message': 'Record updated successfully'})
-        else:
-            return Response({'state': 0, 'message': 'Record cannot be updated'})
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("""
+            INSERT INTO mountain_passes (coordinates, height, name, photos, user_name, email, phone)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (coordinates, height, name, photos, user_name, email, phone))
+        db.commit()
 
-class SubmitDataList(generics.ListAPIView):
-    serializer_class = SubmitDataSerializer
-
-    def get_queryset(self):
-        user_email = self.request.query_params.get('user__email', None)
-        if user_email is not None:
-            return SubmitData.objects.filter(user__email=user_email)
-        return SubmitData.objects.none()
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
