@@ -1,19 +1,18 @@
+from flask import g
 import psycopg2
 import psycopg2.extras
 
-class Database:
-    def __init__(self, dbname, user, password, host):
-        self.conn = psycopg2.connect(
-            dbname=dbname,
-            user=user,
-            password=password,
-            host=host
+def get_db():
+    if 'db' not in g:
+        g.db = psycopg2.connect(
+            dbname='your_dbname',
+            user='your_username',
+            password='your_password',
+            host='your_host'
         )
-        self.cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    return g.db
 
-    def submit_data(self, coordinates, height, name, photos, user_name, email, phone, status='new'):
-        self.cur.execute("""
-        INSERT INTO mountain_passes (coordinates, height, name, photos, user_name, email, phone, status)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """, (coordinates, height, name, photos, user_name, email, phone, status))
-        self.conn.commit()
+def close_db(e=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
